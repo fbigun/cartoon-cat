@@ -1,0 +1,1 @@
+from .cartoon import CartoonCat, BrowserType

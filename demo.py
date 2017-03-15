@@ -1,6 +1,7 @@
-#-*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import cartoon_cat as cc
+import cartoon as cc
 
 if __name__ == '__main__':
 

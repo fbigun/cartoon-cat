@@ -1,8 +1,12 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding: utf-8
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
-import urllib
+try:
+    from urllib import urlopen
+except ImportError:
+    from urllib.request import urlopen
 import logging
 import os
 from os import path as osp
@@ -53,8 +57,8 @@ class CartoonCat:
                 or (0 <= self.__end < self.__begin):
             raise Exception('the begin and end index of chapter is illegal')
 
-        logging.basicConfig(format='[%(asctime)s] %(levelname)s::%(module)s::%(funcName)s() %(message)s', level=logging.INFO)
-
+        logging.basicConfig(format='[%(asctime)s] %(levelname)s::%(module)s::%(funcName)s() %(message)s',
+                            level=logging.INFO)
 
     def __del__(self):
         self.__browser.quit()
@@ -80,10 +84,11 @@ class CartoonCat:
         :param save_path:
         :return:
         """
+
         try:
             with open(save_path, 'wb') as fp:
-                fp.write(urllib.urlopen(url).read())
-        except Exception, et:
+                fp.write(urlopen(url).read())
+        except Exception as et:
             logging.error(et, exc_info=True)
             logging.error('cannot download: %s' % url)
 
@@ -114,7 +119,7 @@ class CartoonCat:
 
         while True:
             image_url = self.__browser.find_element_by_css_selector('#qTcms_pic').get_attribute('src')
-            save_image_name = osp.join(save_folder, ('%05d' % image_idx) + '.' + osp.basename(image_url).split('.')[-1])
+            save_image_name = osp.join(save_folder, ('%05d' % image_idx) + '.' + osp.basename(image_url.split('.')[-1]))
             self.__download(image_url, save_image_name)
 
             # 通过模拟点击加载下一页，如果已经是最后一页，会有弹窗提示，通过这个确定章节是否下完
@@ -136,5 +141,5 @@ class CartoonCat:
         begin = self.__begin if self.__begin >= 0 else 0
         end = self.__end if self.__end >= 0 else len(self.__chapter_list)
 
-        for chapter_idx in xrange(begin, end):
+        for chapter_idx in range(begin, end):
             self.download_chapter(chapter_idx)
